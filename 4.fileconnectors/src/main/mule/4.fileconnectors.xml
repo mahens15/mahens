@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="b5bcccc9-7047-4952-85e5-97895c6d1c71" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="57f90279-c92d-4c69-8e28-464a8719c373" />
+	<flow name="4.fileconnectorsFlow" doc:id="f3770737-5642-489d-8e11-1a2711a71ff3" >
+		<http:listener doc:name="Listener" doc:id="930db4c3-72d6-4db1-9b2a-02186855c392" config-ref="HTTP_Listener_config" path="FILECONNECTORS"/>
+		<logger level="INFO" doc:name="Logger" doc:id="33f1e8a6-2f41-4cb0-ab26-5082aa66af69" message="i am procesing "/>
+		<file:read doc:name="Read" doc:id="10b19d67-947b-4b7b-9b7f-9902959abe57" config-ref="File_Config" path="C:\Users\ACER\Desktop\exchange.json"/>
+		<ee:transform doc:name="Transform Message" doc:id="db9b8126-4df8-4ef1-87f5-bf6fb018919f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="e65b8bd7-cdc7-4bb4-9bf3-1692d119ae4d" message="#[payload]"/>
+		<file:write doc:name="Write" doc:id="09afc3ed-e782-452d-9db4-4d19391bfce4" config-ref="File_Config" path="C:\Users\ACER\Desktop\mahi.json">
+			<file:content ><![CDATA[hi this mahendra]]></file:content>
+		</file:write>
+		<logger level="INFO" doc:name="Logger" doc:id="f32b2ad8-454a-422c-95a4-f5e9260cb01f" message="#[payload]"/>
+	</flow>
+</mule>
